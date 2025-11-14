@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diet Recommendation Chatbot</title>
+    <style>
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background:  #d1bcf1;
+            text-align: center;
+            padding: 30px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 34px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            color:#333;
+        }
+
+        
+        .form-container {
+            background: rgb(241, 201, 210);
+            padding: 25px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            color: #333;
+        }
+
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #a9f0cc;
+            outline: none;
+            box-shadow: 0px 0px 8px rgba(255, 117, 140, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #80a4ee;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content:center;
+            background: #f9f9f9;
+            padding: 5px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .checkbox-group label{
+            display:flex;
+            align-items:center;
+            margin-right:15px;
+            font-size:15px;
+            cursor:pointer;
+        }
+        .checkbox-group input{
+            margin-right: 5px;
+            cursor: pointer;
+        }
+
+        .radio-group{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content:left;
+            background: #f9f9f9;
+            padding:5px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .radio-group label{
+            display:flex;
+            align-items:center;
+            margin-right:15px;
+            font-size:15px;
+            cursor:pointer;
+        
+        }
+
+
+        .result-box {
+            background: rgb(201, 217, 241);
+            padding: 20px;
+            max-width: 500px;
+            margin: 20px auto;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            text-align: left;
+            color: #333;
+        }
+
+        .result-box h2 {
+            color: #fe5b5b;
+            text-align:center;
+        }
+        .result-box p{
+            font-size: 18px;
+            text-align:center;
+
+        }
+
+        /*mobile responsive*/
+        @media (max-width: 500px) {
+            .form-container, .result-box {
+                width: 90%;
+            }
+            .checkbox-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            .checkbox-group label {
+                margin-bottom: 5px;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>AI Diet Recommendation Chatbot</h1>
+
+    <div class="form-container">
+        <form id="dietForm" action="/get_diet" method="post">
+        
+            <input type="number" name="age" placeholder="Enter your age" required>
+            <input type="number" step="0.1" name="bmi" placeholder="Enter BMI" required>
+            <select name="chronic_disease" required>
+                <option value="None">None</option>
+                <option value="diabetes">Diabetes</option>
+                <option value="hypertension">Hypertension</option>
+                <option value="heart disease">Heart Disease</option>
+                
+            </select>
+
+            
+            <div class="radio-group">
+                <label>&nbsp Gender :</label>
+               <label><input type="radio" name="gender" value="male" required> Male</label>
+               <label><input type="radio" name="gender" value="female" required> Female</label>
+            </div>
+
+            
+            
+            <input type="number" name="blood_pressure_sys" placeholder="Systolic BP(Blood Pressure)" required>
+            <input type="number" name="blood_pressure_dia" placeholder="Diastolic BP(Blood Pressure)" required>
+            <input type="number" name="cholesterol" placeholder="Enter cholesterol level" required>
+            <input type="number" name="blood_sugar" placeholder="Enter blood sugar level" required>
+
+            
+            <label><strong>Allergies (Select if any):</strong></label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="allergies" value="Gluten"> Gluten</label>
+                <label><input type="checkbox" name="allergies" value="Lactose"> Lactose</label>
+                <label><input type="checkbox" name="allergies" value="Nuts"> Nuts</label>
+                <label><input type="checkbox" name="allergies" value="Seafood"> Seafood</label>
+            </div><br>
+
+            <label><strong>Diet Preference:</strong></label>
+            <select name="diet_preference" required>
+                <option value="vegan">Vegan</option>
+                <option value="vegetarian">Vegetarian</option>
+                <option value="non-vegetarian">Non-Vegetarian</option>
+            </select>
+
+            <button type="submit">Get Diet Plan</button>
+        </form>
+    </div>
+
+    {% if diet %}
+    <div class="result-box">
+        <h2 >Your Recommended Diet</h2>
+        <p><strong>Calories:</strong> {{ diet.Recommended_Calories }} kcal</p>
+        <p><strong>Protein:</strong> {{ diet.Recommended_Protein }} g</p>
+        <p><strong>Carbs:</strong> {{ diet.Recommended_Carbs }} g</p>
+        <p><strong>Fats:</strong> {{ diet.Recommended_Fats }} g</p>
+        
+        {% if diet.Avoid %}
+        <p><strong>Foods to Avoid:</strong> {{ diet.Avoid }}</p>
+        {% endif %}
+        
+        {% if diet["Meal Plan"] %}
+        <p><strong>Meal Plan:</strong> {{ diet["Meal Plan"] }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <script>
+        // Show loading message on form submit
+        document.getElementById("dietForm").onsubmit = function() {
+            document.querySelector(".loading").style.display = "block";
+        };
+    </script>
+
+</body>
+</html>
